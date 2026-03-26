@@ -36,4 +36,9 @@ const CONFIG = {
 
   // ── End screen ────────────────────────────────────────────────────────────
   endText: "May the Force be with you.",
+
+  // ── Crawl text size ───────────────────────────────────────────────────────
+  // Body paragraph font size. Any valid CSS value: "1.8rem", "2vw", "24px".
+  // Set to null to use the responsive default (clamp 1rem–1.4rem).
+  crawlTextSize: "1.8rem",
 };
