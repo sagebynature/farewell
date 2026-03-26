@@ -16,4 +16,24 @@ const CONFIG = {
 
   // Subtitle line shown above the crawl (optional, set to "" to hide).
   crawlSubtitle: "Episode I",
+
+  // ── Start screen ──────────────────────────────────────────────────────────
+  // Set false to skip the start screen and begin the sequence automatically.
+  showStartScreen: true,
+  startPromptText: "Click anywhere to begin",
+
+  // ── "A long time ago..." intro ────────────────────────────────────────────
+  // Set false to skip the blue intro text entirely.
+  showIntro: true,
+  introLines: [
+    "A long time ago in a galaxy far,",
+    "far away\u2026."
+  ],
+
+  // ── Title reveal ──────────────────────────────────────────────────────────
+  // Set false to skip the title zoom-out and go straight to the crawl.
+  showTitleReveal: true,
+
+  // ── End screen ────────────────────────────────────────────────────────────
+  endText: "May the Force be with you.",
 };

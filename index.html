@@ -268,14 +268,11 @@
   <!-- Start screen -->
   <div id="start-screen" class="layer visible">
     <div class="start-title" id="start-title-text">FAREWELL</div>
-    <div class="start-prompt">Click anywhere to begin</div>
+    <div class="start-prompt" id="start-prompt-text">Click anywhere to begin</div>
   </div>
 
   <!-- "A long time ago..." -->
-  <div id="intro-text" class="layer">
-    <span>A long time ago in a galaxy far,</span>
-    <span>far away&hellip;.</span>
-  </div>
+  <div id="intro-text" class="layer"></div>
 
   <!-- Title reveal -->
   <div id="title-reveal" class="layer">
@@ -293,7 +290,7 @@
 
   <!-- End screen -->
   <div id="end-screen" class="layer">
-    <div class="end-line">May the Force be with you.</div>
+    <div class="end-line" id="end-text"></div>
   </div>
 
   <!-- Hidden YouTube player -->
@@ -358,13 +355,29 @@
       scrollDuration: 100,
       crawlTitle: 'FAREWELL',
       crawlSubtitle: '',
+      showStartScreen: true,
+      startPromptText: 'Click anywhere to begin',
+      showIntro: true,
+      introLines: ['A long time ago in a galaxy far,', 'far away\u2026.'],
+      showTitleReveal: true,
+      endText: 'May the Force be with you.',
     }, typeof CONFIG !== 'undefined' ? CONFIG : {});
 
     // Apply config to DOM
     document.getElementById('start-title-text').textContent = cfg.crawlTitle;
-    document.getElementById('title-main').textContent       = cfg.crawlTitle;
-    document.getElementById('title-sub').textContent        = cfg.crawlSubtitle;
+    document.getElementById('start-prompt-text').textContent = cfg.startPromptText;
+    document.getElementById('title-main').textContent        = cfg.crawlTitle;
+    document.getElementById('title-sub').textContent         = cfg.crawlSubtitle;
+    document.getElementById('end-text').textContent          = cfg.endText;
     document.getElementById('crawl-content').style.setProperty('--scroll-duration', cfg.scrollDuration + 's');
+
+    // Build intro lines
+    const introEl = document.getElementById('intro-text');
+    cfg.introLines.forEach(line => {
+      const span = document.createElement('span');
+      span.textContent = line;
+      introEl.appendChild(span);
+    });
 
     // ── YouTube ────────────────────────────────────────────────────────────
     let ytPlayer = null;
@@ -421,28 +434,31 @@
       if (sequenceStarted) return;
       sequenceStarted = true;
 
-      // Hide start screen
-      fadeOut('start-screen');
-      startMusic();
+      if (cfg.showStartScreen) {
+        fadeOut('start-screen');
+        startMusic();
+        await delay(1400);
+      } else {
+        hide('start-screen');
+        startMusic();
+      }
 
-      await delay(1400);
+      if (cfg.showIntro) {
+        show('intro-text');
+        await delay(3500);
+        fadeOut('intro-text');
+        await delay(1400);
+      }
 
-      // "A long time ago..."
-      show('intro-text');
-      await delay(3500);
-      fadeOut('intro-text');
-      await delay(1400);
-
-      // Title reveal
-      show('title-reveal');
-      await delay(1200);
-
-      // Title zooms away
-      document.getElementById('title-main').classList.add('title-zoom-out');
-      document.getElementById('title-sub').style.transition = 'opacity 3s ease';
-      document.getElementById('title-sub').style.opacity    = '0';
-      await delay(4800);
-      hide('title-reveal');
+      if (cfg.showTitleReveal) {
+        show('title-reveal');
+        await delay(1200);
+        document.getElementById('title-main').classList.add('title-zoom-out');
+        document.getElementById('title-sub').style.transition = 'opacity 3s ease';
+        document.getElementById('title-sub').style.opacity    = '0';
+        await delay(4800);
+        hide('title-reveal');
+      }
 
       // Wait for markdown if not ready
       while (!markdownReady) await delay(100);
@@ -464,9 +480,15 @@
       return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    // Any click/keypress starts the sequence
-    document.addEventListener('click',   startSequence, { once: true });
-    document.addEventListener('keydown', startSequence, { once: true });
+    if (cfg.showStartScreen) {
+      // Wait for user interaction
+      document.addEventListener('click',   startSequence, { once: true });
+      document.addEventListener('keydown', startSequence, { once: true });
+    } else {
+      // Auto-start immediately
+      hide('start-screen');
+      startSequence();
+    }
   </script>
 </body>
 </html>
