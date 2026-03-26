@@ -479,11 +479,20 @@
       await delay(100); // allow paint
       document.getElementById('crawl-content').classList.add('scrolling');
 
-      // End screen after crawl finishes
-      await delay((cfg.scrollDuration + 2) * 1000);
+      // Show end screen when content bottom passes 50% of viewport
+      await new Promise(resolve => {
+        function checkPosition() {
+          const bottom = document.getElementById('crawl-content').getBoundingClientRect().bottom;
+          if (bottom <= window.innerHeight * 0.5) {
+            resolve();
+          } else {
+            requestAnimationFrame(checkPosition);
+          }
+        }
+        requestAnimationFrame(checkPosition);
+      });
       document.getElementById('crawl-scene').style.transition = 'opacity 3s ease';
       document.getElementById('crawl-scene').classList.remove('visible');
-      await delay(2000);
       show('end-screen');
     }
 
