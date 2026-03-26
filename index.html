@@ -268,7 +268,7 @@
   <canvas id="stars"></canvas>
 
   <!-- Start screen -->
-  <div id="start-screen" class="layer visible">
+  <div id="start-screen" class="layer">
     <div class="start-title" id="start-title-text"></div>
     <div class="start-prompt" id="start-prompt-text">Click anywhere to begin</div>
   </div>
@@ -501,7 +501,8 @@
     }
 
     if (cfg.showStartScreen) {
-      // Wait for user interaction
+      // Show start screen and wait for user interaction
+      show('start-screen');
       document.addEventListener('click',   startSequence, { once: true });
       document.addEventListener('keydown', startSequence, { once: true });
     } else {

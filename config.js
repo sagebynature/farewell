@@ -9,20 +9,20 @@ const CONFIG = {
   youtubeVideoId: "MNMSAIG0dfQ",
 
   // Total scroll duration in seconds. Increase for slower, more dramatic crawl.
-  scrollDuration: 90,
+  scrollDuration: 100,
 
   // Markdown file to load as the crawl message.
   messageFile: "MESSAGE.md",
 
   // The big title shown before the crawl begins.
-  crawlTitle: "Title Goes Here",
+  crawlTitle: "Into the Frontier",
 
-  // Subtitle line shown above the crawl (optional, set to "" to hide).
-  crawlSubtitle: "Subtitle Goes Here",
+    // Subtitle line shown above the crawl (optional, set to "" to hide).
+  crawlSubtitle: "A New Chapter Begins",
 
   // ── Start screen ──────────────────────────────────────────────────────────
   // Set false to skip the start screen and begin the sequence automatically.
-  showStartScreen: true,
+  showStartScreen: false,
   startPromptText: "Click anywhere to begin",
 
   // ── "A long time ago..." intro ────────────────────────────────────────────
