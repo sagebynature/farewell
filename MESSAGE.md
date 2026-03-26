@@ -1,29 +1,23 @@
-# A New Chapter Begins
+# Your Message Goes Here
 
-It is a time of great change. After years of shared journeys, late nights, and countless moments that have shaped us all, we find ourselves at a crossroads.
+This is a sample message to demonstrate **Starcrawl** — a cinematic, Star Wars-style text crawl for any occasion.
 
-One among us has chosen a new path — a bold leap into the unknown, guided by courage, curiosity, and an unshakable spirit.
+Replace this file with your own words. Use Markdown headings, paragraphs, *emphasis*, and **bold** text — everything will be styled automatically for the crawl.
 
-## What You Have Given Us
+## What It's Good For
 
-You arrived not just as a colleague, but as a force of nature. Your laughter filled the room before you did. Your ideas challenged us to think bigger. Your kindness reminded us why the work we do matters.
+Starcrawl works for any moment that deserves a dramatic entrance:
 
-In the battles we fought together — the impossible deadlines, the shifting requirements, the 3am deploys — you were there. Not just present, but *present*. Fully, brilliantly, irreplaceably present.
+A farewell for a beloved colleague. A tribute to someone who made a difference. A launch announcement for something you've worked hard to build. A love letter to a team, a project, or a chapter of life now closed.
 
-## The Road Ahead
+## How To Customize
 
-The galaxy is vast, and it needs people like you in it.
+Edit this file — `MESSAGE.md` — with your message.
 
-Wherever this next chapter takes you, carry with you the knowledge that you changed this place. You changed *us*. The work we do will carry your fingerprints long after your desk has been reclaimed.
+Set your YouTube soundtrack, title, and intro text in `config.js`.
 
-## Until We Meet Again
+Push to `main`. The stars do the rest.
 
-This is not a goodbye.
+## The Stage Is Yours
 
-It is a "see you among the stars."
-
-May the road rise up to meet you. May the force be with you — always.
-
-*With love, gratitude, and a little bit of envy,*
-
-**Your crew**
+*Write something worthy of the crawl.*
