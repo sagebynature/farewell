@@ -9,7 +9,7 @@ const CONFIG = {
   youtubeVideoId: "_D0ZQPqeJkk",
 
   // Total scroll duration in seconds. Increase for slower, more dramatic crawl.
-  scrollDuration: 150,
+  scrollDuration: 140,
 
   // Markdown file to load as the crawl message.
   messageFile: "MESSAGE.md",
@@ -41,17 +41,36 @@ const CONFIG = {
   // A single string, or an array of strings for multiple lines.
   endText: [
     "sage.choi@gmail.com",
-    "https://www.linkedin.com/in/sage-choi/",
-    "https://sagebynature.substack.com/"
+    "https://www.linkedin.com/in/sage-choi",
+    "https://sagebynature.substack.com"
   ],
 
   // ── Crawl text size ───────────────────────────────────────────────────────
   // Body paragraph font size. Any valid CSS value: "1.8rem", "2vw", "24px".
   // Set to null to use the responsive default (clamp 1rem–1.4rem).
-  crawlTextSize: "clamp(1.3rem, 2.8vw, 1.9rem)",
+  crawlTextSize: null,
 
   // ── Crawl width ───────────────────────────────────────────────────────────
   // Width of the crawl text column. Any valid CSS value: "70%", "900px".
-  // Set to null to use the default (min(58%, 680px)).
-  crawlWidth: "75%",
+  // Set to null to use the default (min(86vw, 42rem)).
+  crawlWidth: null,
+
+  // ── Advanced crawl timing/layout ──────────────────────────────────────────
+  // All of these can be left alone unless you want to tune the presentation.
+  crawlStartOffsetVh: 5,
+  crawlEndTriggerViewport: -0.2,
+  crawlFadeDistanceViewportHeights: 2,
+  crawlPerspective: 400,
+  crawlPerspectiveOrigin: "50% 90%",
+  crawlTiltDegrees: 15,
+
+  // ── Sequence timing ───────────────────────────────────────────────────────
+  fadeMs: 1300,
+  fadeSettleMs: 1400,
+  introDurationMs: 5000,
+  titleHoldMs: 1200,
+  titleZoomMs: 4800,
+  endFadeDurationSeconds: 5,
+  // Set to null to show the end screen after the fade completes.
+  endScreenDelayMs: null,
 };

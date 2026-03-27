@@ -1,6 +1,6 @@
-It is a time of incredible transformation. We are standing at a crossroads where the landscape of everything we’ve learned is being reshaped by a massive, unavoidable wave of AI.
+What a time of incredible transformation! We are standing at a crossroads where the landscape of everything we’ve learned is being reshaped by a massive, unavoidable wave of AI.
 <br>
-For three years, I have been privileged to serve as part of this elite fleet at Apollo. But as I look at the horizon, I realize that for me, the next stage of growth—and the most important "deploy" of my life—lies in the open water.
+For three years, I have been privileged to serve as part of this elite fleet at Apollo. But as I look at the horizon, I realize that for me, the next stage of growth — and the most important "deploy" of my life — lies in the open water.
 <br><br>
 
 # The Road Ahead
@@ -17,11 +17,11 @@ Beyond the code, there is a deeply personal driver for this leap.
 I’ll be honest: I haven't actually been a great dad. For more than two decades, I prioritized professional and commercial success, believing that providing my family with comfort was my primary duty. But I’ve come to realize that comfort is no substitute for presence. I am stepping away with the total humility of someone who is still learning how to be the father my children deserve.
 <br><br>
 My new mission is to become **the world’s best AI-wielding dad**.
-I want to raise my children with the right AI awareness—using these tools to handle the mundane so I can double down on what truly makes us human: creative thinking, empathy, and being fully present. This mission carries rewards that no amount of money could ever match.
+I want to raise my children with the right AI awareness — using these tools to handle the mundane so I can double down on what truly makes us human: **creative thinking, empathy, and being fully present**. This mission carries rewards that no amount of money could ever match.
 <br><br>
 
 # A Call for Collaboration
-As I move forward, I intend to push these engineering boundaries in public. I am seeking your support as I navigate this new landscape. If you believe in this mission—of autonomy, of engineering excellence, and of raising the next generation to master the tools of the future—I welcome your ideas and your collaboration.
+As I move forward, I intend to push these engineering boundaries in public. I am seeking your support as I navigate this new landscape. If you believe in this mission — of autonomy, of engineering excellence, and of raising the next generation to master the tools of the future — I welcome your ideas and your collaboration.
 <br><br>
 While I remain open to future professional opportunities, they must be ones that align with this new architecture of autonomy and family-centric innovation.
 <br><br>

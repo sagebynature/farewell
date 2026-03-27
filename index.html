@@ -175,8 +175,8 @@
       position: fixed;
       inset: 0;
       overflow: hidden;
-      perspective: 400px;
-      perspective-origin: 50% 90%;
+      perspective: var(--crawl-perspective, 400px);
+      perspective-origin: var(--crawl-perspective-origin, 50% 90%);
       z-index: 10;
       opacity: 0;
       transition: opacity 1.5s ease;
@@ -192,21 +192,16 @@
       left: 50%;
       height: 0;
       overflow: visible;
-      width: var(--crawl-width, min(58%, 680px));
-      transform: translateX(-50%) rotateX(22deg);
+      width: var(--crawl-width, min(86vw, 42rem));
+      transform: translateX(-50%) rotateX(var(--crawl-tilt, 22deg));
       transform-origin: bottom center;
     }
 
     #crawl-content {
       width: 100%;
       text-align: justify;
+      will-change: transform;
     }
-
-    #crawl-content.scrolling {
-      animation: crawlScroll var(--scroll-duration, 90s) linear forwards;
-    }
-
-    /* crawlScroll keyframe injected by JS from physics constants */
 
     /* Crawl typography */
     #crawl-content h1 {
@@ -345,6 +340,7 @@
   <script src="https://www.youtube.com/iframe_api"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
   <script src="config.js"></script>
+  <script src="crawlTiming.js"></script>
   <script src="youtubePlaybackController.js"></script>
 
   <script>
@@ -410,27 +406,37 @@
       messageFile: 'MESSAGE.md',
       crawlTextSize: null,
       crawlWidth: null,
+      crawlStartOffsetVh: 5,
+      crawlEndTriggerViewport: 0.5,
+      crawlFadeDistanceViewportHeights: 2,
+      crawlPerspective: 400,
+      crawlPerspectiveOrigin: '50% 90%',
+      crawlTiltDegrees: 22,
+      fadeMs: 1300,
+      fadeSettleMs: 1400,
+      introDurationMs: 5000,
+      titleHoldMs: 1200,
+      titleZoomMs: 4800,
+      endFadeDurationSeconds: 3,
+      endScreenDelayMs: null,
     }, typeof CONFIG !== 'undefined' ? CONFIG : {});
 
-    // ── Crawl physics constants ──────────────────────────────────────────
-    const CRAWL_START_VH = 5;      // content starts just below viewport
-    const CRAWL_END_VH = -300;   // content ends well above viewport
-    const CRAWL_TOTAL_VH = CRAWL_START_VH - CRAWL_END_VH; // 355
-    const CRAWL_PADDING_VH = 30;     // padding-bottom buffer on crawl content
-    const END_TRIGGER_VP = 0.5;    // trigger end when text passes this viewport fraction
-    const FADE_SCROLL_VP = 2.0;    // extra viewport-heights to scroll during fade-out
-
-    // ── Sequence timing (ms unless noted) ────────────────────────────────
-    const FADE_MS = 1300;   // opacity transition settle time
-    const FADE_SETTLE_MS = 1400;   // wait after fade before next phase
-    const INTRO_MS = 5000;   // intro text display duration
-    const TITLE_HOLD_MS = 1200;   // title visible before zoom-out starts
-    const TITLE_ZOOM_MS = 4800;   // title zoom-out animation duration
-    const END_FADE_S = 3;      // crawl scene fade-out (seconds)
-    const END_DELAY_MS = 2000;   // delay before showing end screen
+    const FADE_MS = cfg.fadeMs;
+    const FADE_SETTLE_MS = cfg.fadeSettleMs;
+    const INTRO_MS = cfg.introDurationMs;
+    const TITLE_HOLD_MS = cfg.titleHoldMs;
+    const TITLE_ZOOM_MS = cfg.titleZoomMs;
+    const END_FADE_S = cfg.endFadeDurationSeconds;
+    const END_DELAY_MS = Math.max(
+      cfg.endScreenDelayMs ?? END_FADE_S * 1000,
+      END_FADE_S * 1000,
+    );
 
     // Apply config to DOM
     document.title = cfg.crawlTitle;
+    const crawlSceneEl = document.getElementById('crawl-scene');
+    const crawlWrapEl = document.getElementById('crawl-wrap');
+    const crawlContentEl = document.getElementById('crawl-content');
     document.getElementById('start-title-text').textContent = cfg.crawlTitle;
     document.getElementById('start-prompt-text').textContent = cfg.startPromptText;
     document.getElementById('title-main').textContent = cfg.crawlTitle;
@@ -444,24 +450,21 @@
       div.textContent = line;
       endScreenEl.appendChild(div);
     });
-    document.getElementById('crawl-content').style.setProperty('--scroll-duration', cfg.scrollDuration + 's');
     if (cfg.crawlTextSize) {
-      document.getElementById('crawl-content').style.setProperty('--crawl-text-size', cfg.crawlTextSize);
+      crawlContentEl.style.setProperty('--crawl-text-size', cfg.crawlTextSize);
     }
     if (cfg.crawlWidth) {
-      document.getElementById('crawl-wrap').style.setProperty('--crawl-width', cfg.crawlWidth);
+      crawlWrapEl.style.setProperty('--crawl-width', cfg.crawlWidth);
     }
-
-    // Inject crawl geometry from constants (single source of truth)
-    document.getElementById('crawl-content').style.paddingBottom = CRAWL_PADDING_VH + 'vh';
-    document.getElementById('crawl-content').style.transform = `translateY(${CRAWL_START_VH}vh)`;
-    document.head.appendChild(Object.assign(document.createElement('style'), {
-      textContent: `
-        @keyframes crawlScroll {
-          0%   { transform: translateY(${CRAWL_START_VH}vh); }
-          100% { transform: translateY(${CRAWL_END_VH}vh); }
-        }`
-    }));
+    if (cfg.crawlPerspective) {
+      crawlSceneEl.style.setProperty('--crawl-perspective', `${cfg.crawlPerspective}px`);
+    }
+    if (cfg.crawlPerspectiveOrigin) {
+      crawlSceneEl.style.setProperty('--crawl-perspective-origin', cfg.crawlPerspectiveOrigin);
+    }
+    if (cfg.crawlTiltDegrees !== null && cfg.crawlTiltDegrees !== undefined) {
+      crawlWrapEl.style.setProperty('--crawl-tilt', `${cfg.crawlTiltDegrees}deg`);
+    }
 
     // Build intro lines
     const introEl = document.getElementById('intro-text');
@@ -534,6 +537,27 @@
       if (cb) setTimeout(cb, FADE_MS);
     }
 
+    function startCrawlTransition() {
+      const viewportHeight = CrawlTiming.getViewportHeight(window);
+      const startTranslateY = viewportHeight * (cfg.crawlStartOffsetVh / 100);
+      const crawlTiming = CrawlTiming.createCrawlTiming({
+        startTranslateY,
+        contentHeight: crawlContentEl.scrollHeight,
+        viewportHeight,
+        endTriggerViewport: cfg.crawlEndTriggerViewport,
+        fadeDistanceViewportHeights: cfg.crawlFadeDistanceViewportHeights,
+        durationSeconds: cfg.scrollDuration,
+      });
+
+      crawlContentEl.style.transition = 'none';
+      crawlContentEl.style.transform = `translateY(${startTranslateY}px)`;
+      crawlContentEl.style.transition = `transform ${crawlTiming.totalDurationMs}ms linear`;
+      crawlContentEl.getBoundingClientRect();
+      crawlContentEl.style.transform = `translateY(${crawlTiming.endTranslateY}px)`;
+
+      return crawlTiming;
+    }
+
     let sequenceStarted = false;
     let musicTriggered = false;
 
@@ -578,38 +602,14 @@
       while (!markdownReady) await delay(100);
 
       // Start crawl
-      document.getElementById('crawl-scene').classList.add('visible');
+      crawlSceneEl.classList.add('visible');
       await delay(100); // allow paint
-      document.getElementById('crawl-content').classList.add('scrolling');
-
-      // Trigger end screen when the last line of text passes END_TRIGGER_VP of viewport.
-      // Animation: translateY(START) → translateY(END) over scrollDuration.
-      // scrollHeight includes CRAWL_PADDING_VH, which the offset accounts for.
-      // f = ((END_TRIGGER_VP - (START - PADDING)/100) * vh + scrollH) / (TOTAL/100 * vh)
-      {
-        const vh = window.innerHeight;
-        const scrollH = document.getElementById('crawl-content').scrollHeight;
-        const offset = END_TRIGGER_VP - (CRAWL_START_VH - CRAWL_PADDING_VH) / 100;
-        const fraction = Math.min(1, (offset * vh + scrollH) / (CRAWL_TOTAL_VH / 100 * vh));
-        await delay(fraction * cfg.scrollDuration * 1000);
-      }
-
-      const crawlContent = document.getElementById('crawl-content');
-      const crawlScene = document.getElementById('crawl-scene');
-      const matrix = new DOMMatrixReadOnly(window.getComputedStyle(crawlContent).transform);
-      const currentY = matrix.m42; // px
-
-      // Continue scrolling at the same speed during fade-out
-      crawlContent.style.animation = 'none';
-      crawlContent.style.transform = `translateY(${currentY}px)`;
-      crawlContent.getBoundingClientRect(); // force reflow
-      const continueDuration = (FADE_SCROLL_VP / (CRAWL_TOTAL_VH / 100)) * cfg.scrollDuration;
-      crawlContent.style.transition = `transform ${continueDuration}s linear`;
-      crawlContent.style.transform = `translateY(${currentY - window.innerHeight * FADE_SCROLL_VP}px)`;
+      const crawlTiming = startCrawlTransition();
+      await delay(crawlTiming.triggerDelayMs);
 
       // Fade crawl out and show end screen
-      crawlScene.style.transition = `opacity ${END_FADE_S}s ease`;
-      crawlScene.classList.remove('visible');
+      crawlSceneEl.style.transition = `opacity ${END_FADE_S}s ease`;
+      crawlSceneEl.classList.remove('visible');
       await delay(END_DELAY_MS);
       show('end-screen');
     }

@@ -22,3 +22,22 @@ test('end text keeps responsive font sizing', () => {
     /\.end-line\s*\{[\s\S]*font-size:\s*clamp\(/,
   );
 });
+
+test('crawl width keeps a responsive viewport-based fallback', () => {
+  assert.match(
+    html,
+    /#crawl-wrap\s*\{[\s\S]*width:\s*var\(--crawl-width,\s*min\(/,
+  );
+});
+
+test('crawl fade timing is derived from content height and uses the computed delay', () => {
+  assert.match(
+    html,
+    /contentHeight:\s*crawlContentEl\.scrollHeight/,
+  );
+
+  assert.match(
+    html,
+    /await delay\(crawlTiming\.triggerDelayMs\)/,
+  );
+});
